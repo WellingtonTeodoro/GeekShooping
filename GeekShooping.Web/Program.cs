@@ -1,9 +1,23 @@
+using GeekShooping.Web.Services.IServices;
+using GeekShooping.Web.Services;
+using System.Globalization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient<IProductService, ProductService>( c =>
+        c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"])
+    );
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
-var app = builder.Build();
+var cultureInfo = new CultureInfo("pt-BR");
+cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
+cultureInfo.NumberFormat.CurrencyDecimalSeparator = ".";
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+var app = builder.Build(); 
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
